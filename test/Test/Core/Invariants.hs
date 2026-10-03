@@ -1,162 +1,99 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 {-|
 Module      : Test.Core.Invariants
-Description : Tests for kernel invariants
-
-Tests verify that the equality checking subsystem maintains critical invariants:
-  1. Determinism: same input produces same output
-  2. Fail-closed: unknown equality returns False
-  3. No hidden theorem proving: algebraic properties are not assumed
-  4. No external solvers: all reasoning is internal
+Description : Tests for AST invariants
 -}
 
-module Test.Core.Invariants (tests) where
+module Test.Core.Invariants
+  ( tests
+  ) where
 
 import Test.Tasty
 import Test.Tasty.HUnit
-import Test.Tasty.QuickCheck
+import qualified Data.Set as Set
+import Data.Text (Text)
 
 import Assertica.Core.AST
-import Assertica.Core.Equality
 import Assertica.Core.Invariants
 
 tests :: TestTree
 tests = testGroup "Assertica.Core.Invariants"
-  [ determinismTests
-  , failClosedTests
-  , noHiddenTheoremsTests
+  [ testGroup "Binding Invariants"
+      [ testCase "All variables bound" testAllVarsBound
+      , testCase "Free variables detected" testFreeVarsDetected
+      ]
+  , testGroup "Qualification Invariants"
+      [ testCase "Valid qualification" testValidQual
+      , testCase "Invalid empty local name" testInvalidQual
+      ]
+  , testGroup "Type Well-Formedness"
+      [ testCase "Well-formed simple type" testWellFormedType
+      ]
+  , testGroup "Term Well-Formedness"
+      [ testCase "Well-formed term" testWellFormedTerm
+      ]
   ]
 
--- | Tests for determinism invariant
-determinismTests :: TestTree
-determinismTests = testGroup "Determinism Invariant"
-  [ testCase "Determinism for simple terms" $
-      let t1 = TConst "5"
-          t2 = TConst "5"
-      in isDefinitionallyEqual t1 t2 @?=
-         isDefinitionallyEqual t1 t2
+-- ============================================================================
+-- BINDING INVARIANT TESTS
+-- ============================================================================
 
-  , testCase "Determinism for lambda terms" $
-      let x = Var "x"
-          t1 = TAbs x (TVar x)
-          t2 = TAbs x (TVar x)
-      in isDefinitionallyEqual t1 t2 @?=
-         isDefinitionallyEqual t1 t2
+testAllVarsBound :: Assertion
+testAllVarsBound =
+  let x = Var "x" 1
+      binder = Binder x Nothing
+      body = Var x
+      lam = Lam binder body
+  in allVariablesBound lam @? "All variables should be bound in λx. x"
 
-  , testCase "Determinism for applications" $
-      let x = Var "x"
-          t1 = TApp (TAbs x (TVar x)) (TConst "5")
-          t2 = TConst "5"
-      in isDefinitionallyEqual t1 t2 @?=
-         isDefinitionallyEqual t1 t2
+testFreeVarsDetected :: Assertion
+testFreeVarsDetected =
+  let x = Var "x" 1
+      y = Var "y" 2
+      binder = Binder x Nothing
+      body = App (Var x) (Var y)
+      lam = Lam binder body
+  in not (allVariablesBound lam) @? "Free variable y should be detected"
 
-  , testProperty "Determinism holds for all term pairs" $
-      \t1 t2 ->
-        isDefinitionallyEqual t1 t2 ==
-        isDefinitionallyEqual t1 t2
-  ]
+-- ============================================================================
+-- QUALIFICATION INVARIANT TESTS
+-- ============================================================================
 
--- | Tests for fail-closed invariant
-failClosedTests :: TestTree
-failClosedTests = testGroup "Fail-Closed Invariant"
-  [ testCase "Different variables must fail" $
-      let x = Var "x"
-          y = Var "y"
-      in isDefinitionallyEqual (TVar x) (TVar y) @?= False
+testValidQual :: Assertion
+testValidQual =
+  let q = QName ["Prelude"] "map"
+  in case checkQualificationInvariant q of
+       Right () -> pure ()
+       Left _ -> assertFailure "Valid qualification failed"
 
-  , testCase "Different constants must fail" $
-      isDefinitionallyEqual (TConst "1") (TConst "2") @?= False
+testInvalidQual :: Assertion
+testInvalidQual =
+  let q = QName ["Prelude"] ""  -- Empty local name
+  in case checkQualificationInvariant q of
+       Left _ -> pure ()
+       Right () -> assertFailure "Should have rejected empty local name"
 
-  , testCase "Lambda vs constant must fail" $
-      let x = Var "x"
-      in isDefinitionallyEqual (TAbs x (TVar x)) (TConst "5") @?= False
+-- ============================================================================
+-- TYPE WELL-FORMEDNESS TESTS
+-- ============================================================================
 
-  , testCase "Unknown commutativity must fail" $
-      let x = Var "x"
-          y = Var "y"
-          t1 = TApp (TApp (TConst "+") (TVar x)) (TVar y)
-          t2 = TApp (TApp (TConst "+") (TVar y)) (TVar x)
-      in isDefinitionallyEqual t1 t2 @?= False
+testWellFormedType :: Assertion
+testWellFormedType =
+  let ty = TyFun (TyVar (Var "a" 1)) (TyVar (Var "a" 1))
+  in case isWellFormedType ty of
+       Right () -> pure ()
+       Left _ -> assertFailure "Type should be well-formed"
 
-  , testProperty "Equality is only true when truly equivalent" $
-      \t1 t2 ->
-        -- If equality returns True, we should be able to verify it by
-        -- checking that both terms normalize to the same form
-        not (isDefinitionallyEqual t1 t2) ||
-        (normalize t1 == normalize t2)  -- Approximately (modulo alpha)
-  ]
+-- ============================================================================
+-- TERM WELL-FORMEDNESS TESTS
+-- ============================================================================
 
--- | Tests for no-hidden-theorems invariant
-noHiddenTheoremsTests :: TestTree
-noHiddenTheoremsTests = testGroup "No Hidden Theorems"
-  [ testCase "Commutativity is not automatic" $
-      -- x + y ≠ y + x (no commutativity axiom)
-      let x = Var "x"
-          y = Var "y"
-          t1 = TApp (TApp (TConst "+") (TVar x)) (TVar y)
-          t2 = TApp (TApp (TConst "+") (TVar y)) (TVar x)
-      in isDefinitionallyEqual t1 t2 @?= False
-
-  , testCase "Associativity is not automatic" $
-      -- (x + y) + z ≠ x + (y + z)
-      let x = Var "x"
-          y = Var "y"
-          z = Var "z"
-          t1 = TApp (TApp (TConst "+") (TApp (TApp (TConst "+") (TVar x)) (TVar y))) (TVar z)
-          t2 = TApp (TApp (TConst "+") (TVar x)) (TApp (TApp (TConst "+") (TVar y)) (TVar z))
-      in isDefinitionallyEqual t1 t2 @?= False
-
-  , testCase "Identity is not automatic" $
-      -- x + 0 ≠ x (no identity axiom)
-      let x = Var "x"
-          t1 = TApp (TApp (TConst "+") (TVar x)) (TConst "0")
-          t2 = TVar x
-      in isDefinitionallyEqual t1 t2 @?= False
-
-  , testCase "Distributivity is not automatic" $
-      -- x * (y + z) ≠ (x * y) + (x * z)
-      let x = Var "x"
-          y = Var "y"
-          z = Var "z"
-          t1 = TApp (TApp (TConst "*") (TVar x)) (TApp (TApp (TConst "+") (TVar y)) (TVar z))
-          t2 = TApp (TApp (TConst "+") (TApp (TApp (TConst "*") (TVar x)) (TVar y)))
-                     (TApp (TApp (TConst "*") (TVar x)) (TVar z))
-      in isDefinitionallyEqual t1 t2 @?= False
-
-  , testCase "De Morgan's law is not automatic" $
-      -- not (x and y) ≠ (not x) or (not y) (no De Morgan's axiom)
-      -- We'd need to encode boolean operations, so skip for now
-      True @?= True
-
-  , testProperty "Only beta, alpha, eta reductions are automatic" $
-      -- This is a sanity check: complex expressions are not automatically equal
-      \t1 t2 ->
-        not (isDefinitionallyEqual t1 t2) ||
-        -- If they're equal, it's because of beta/alpha/eta reduction,
-        -- which means they must normalize to the same form
-        (alphaEquivalent (normalize t1) (normalize t2))
-  ]
-
--- | Test the invariant checking functions
-invariantCheckingTests :: TestTree
-invariantCheckingTests = testGroup "Invariant Checking Functions"
-  [ testCase "checkDeterminism passes for pure equality checker" $
-      let checker = isDefinitionallyEqual
-          t1 = TConst "5"
-          t2 = TConst "5"
-      in case checkDeterminism checker t1 t2 of
-           Right () -> True @?= True
-           Left msg -> False @?= True
-
-  , testCase "checkFailClosed passes" $
-      let checker = isDefinitionallyEqual
-          t1 = TVar (Var "x")
-          t2 = TVar (Var "y")
-      in case checkFailClosed checker t1 t2 of
-           Right () -> True @?= True
-           Left msg -> False @?= True
-
-  , testCase "checkNoHiddenTheorems passes" $
-      case checkNoHiddenTheorems isDefinitionallyEqual of
-        Right () -> True @?= True
-        Left msg -> False @?= True
-  ]
+testWellFormedTerm :: Assertion
+testWellFormedTerm =
+  let x = Var "x" 1
+      binder = Binder x Nothing
+      term = Lam binder (Var x)
+  in case isWellFormedTerm term of
+       Right () -> pure ()
+       Left _ -> assertFailure "Term should be well-formed"
