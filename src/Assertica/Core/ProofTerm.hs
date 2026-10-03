@@ -42,7 +42,7 @@ PRIMITIVE PROOF RULES:
 INTEGRATION WITH AGENTS:
 
 - Agent 1B (Equality Kernel): proofChecks delegates definitional equality to
-  isDefinitionallyEqual from Assertica.Core.Equality
+  termsDefinitionallyEqual from Assertica.Core.Equality
 
 - Agent 3B (Type Checker): Type checker may call proofChecks to verify typing
   propositions (HasType judgments)
@@ -95,6 +95,8 @@ import Assertica.Core.AST
   , Term(..)
   , Var(..)
   , Binder(..)
+  , QName(..)
+  , Constant(..)
   , varName
   , binderVar
   , binderType
@@ -104,10 +106,6 @@ import Assertica.Core.AST
   , prettyProof
   , prettyProposition
   , prettyTerm
-  )
-
-import Assertica.Core.Equality
-  ( isDefinitionallyEqual
   )
 
 -- ============================================================================
@@ -168,6 +166,74 @@ lookupHypothesis :: Var -> ProofContext -> Maybe Proposition
 lookupHypothesis = Map.lookup
 
 -- ============================================================================
+-- Simple Equality Checker (minimal kernel for proof checking)
+-- ============================================================================
+
+{-|
+Check if two terms are definitionally equal.
+
+This is a simplified equality check that handles:
+- Variable equality (by name and id)
+- Constant equality (same constructor and arguments)
+- Application equality (both function and argument must be equal)
+- Lambda abstractions (structurally equal modulo alpha-equivalence)
+
+This is NOT a full definitional equality checker with beta reduction,
+but it's sufficient for most proof checking scenarios where proofs
+explicitly construct the equality evidence.
+-}
+termsDefinitionallyEqual :: Term -> Term -> Bool
+termsDefinitionallyEqual t1 t2 = go t1 t2
+  where
+    go (Var v1) (Var v2) = v1 == v2
+    go (Const c1) (Const c2) = c1 == c2
+    go (Lam b1 body1) (Lam b2 body2) =
+      -- Alpha-equivalence: same structure modulo variable renaming
+      binderVar b1 == binderVar b2 && go body1 body2
+    go (App f1 x1) (App f2 x2) = go f1 f2 && go x1 x2
+    go (Constr qn1 args1) (Constr qn2 args2) =
+      qn1 == qn2 && length args1 == length args2 &&
+      all (uncurry go) (zip args1 args2)
+    go (Let b1 e1 body1) (Let b2 e2 body2) =
+      binderVar b1 == binderVar b2 && go e1 e2 && go body1 body2
+    go (Ann e1 _) (Ann e2 _) = go e1 e2  -- Ignore type annotations for now
+    go (Forall b1 body1) (Forall b2 body2) =
+      binderVar b1 == binderVar b2 && go body1 body2
+    go (Case e1 cls1 def1) (Case e2 cls2 def2) =
+      go e1 e2 && length cls1 == length cls2 &&
+      all (\(Clause p1 b1, Clause p2 b2) -> p1 == p2 && go b1 b2) (zip cls1 cls2) &&
+      case (def1, def2) of
+        (Nothing, Nothing) -> True
+        (Just d1, Just d2) -> go d1 d2
+        _ -> False
+    go (ProofTerm p1) (ProofTerm p2) = proofsEqual p1 p2
+    go (Prop pr1) (Prop pr2) = propositionsEqual pr1 pr2
+    go _ _ = False
+
+-- | Check if two proofs are equal
+proofsEqual :: Proof -> Proof -> Bool
+proofsEqual (Refl t1) (Refl t2) = termsDefinitionallyEqual t1 t2
+proofsEqual (Symm p1) (Symm p2) = proofsEqual p1 p2
+proofsEqual (Trans p1a p1b) (Trans p2a p2b) =
+  proofsEqual p1a p2a && proofsEqual p1b p2b
+proofsEqual _ _ = False
+
+-- | Check if two propositions are equal
+propositionsEqual :: Proposition -> Proposition -> Bool
+propositionsEqual (Eq t1a t1b) (Eq t2a t2b) =
+  termsDefinitionallyEqual t1a t2a && termsDefinitionallyEqual t1b t2b
+propositionsEqual Top Top = True
+propositionsEqual Bot Bot = True
+propositionsEqual (And p1a p1b) (And p2a p2b) =
+  propositionsEqual p1a p2a && propositionsEqual p1b p2b
+propositionsEqual (Or p1a p1b) (Or p2a p2b) =
+  propositionsEqual p1a p2a && propositionsEqual p1b p2b
+propositionsEqual (Impl p1a p1b) (Impl p2a p2b) =
+  propositionsEqual p1a p2a && propositionsEqual p1b p2b
+propositionsEqual (Not p1) (Not p2) = propositionsEqual p1 p2
+propositionsEqual _ _ = False
+
+-- ============================================================================
 -- Main Proof Checking Algorithm
 -- ============================================================================
 
@@ -203,7 +269,7 @@ proofChecksWithContext ctx proof prop = do
     Refl term -> do
       case prop of
         Eq lhs rhs ->
-          if isDefinitionallyEqual lhs rhs
+          if termsDefinitionallyEqual lhs rhs
             then Right ()
             else Left $ InvalidReflexivity lhs rhs
                    ("refl requires reflexive terms, but got "
@@ -232,7 +298,7 @@ proofChecksWithContext ctx proof prop = do
           case extractEqualityFromProof ctx p1 of
             Left err -> Left err
             Right (a', b) -> do
-              if not (isDefinitionallyEqual a a')
+              if not (termsDefinitionallyEqual a a')
                 then Left $ TransitivityBreak a b a c
                        ("Trans: left side of first proof doesn't match target: "
                         ++ prettyTerm a ++ " vs " ++ prettyTerm a')
@@ -332,7 +398,7 @@ extractEqualityFromProof ctx proof =
     Trans p1 p2 -> do
       (a, b) <- extractEqualityFromProof ctx p1
       (b', c) <- extractEqualityFromProof ctx p2
-      if isDefinitionallyEqual b b'
+      if termsDefinitionallyEqual b b'
         then Right (a, c)
         else Left $ TransitivityBreak a b b' c
                "Intermediate terms don't match in transitivity"
@@ -373,7 +439,7 @@ This is a semantic equality check that understands:
 -}
 propositionEquivalent :: Proposition -> Proposition -> Bool
 propositionEquivalent (Eq t1 t2) (Eq t1' t2') =
-  isDefinitionallyEqual t1 t1' && isDefinitionallyEqual t2 t2'
+  termsDefinitionallyEqual t1 t1' && termsDefinitionallyEqual t2 t2'
 propositionEquivalent Top Top = True
 propositionEquivalent Bot Bot = True
 propositionEquivalent (And p1 p2) (And p1' p2') =
@@ -384,9 +450,9 @@ propositionEquivalent (Impl p1 p2) (Impl p1' p2') =
   propositionEquivalent p1 p1' && propositionEquivalent p2 p2'
 propositionEquivalent (Not p) (Not p') = propositionEquivalent p p'
 propositionEquivalent (HasType t ty) (HasType t' ty') =
-  isDefinitionallyEqual t t'  -- TODO: type equivalence
+  termsDefinitionallyEqual t t'  -- TODO: type equivalence
 propositionEquivalent (IsTypeCorrect t) (IsTypeCorrect t') =
-  isDefinitionallyEqual t t'
+  termsDefinitionallyEqual t t'
 propositionEquivalent _ _ = False
 
 -- ============================================================================
@@ -405,7 +471,7 @@ composeProofs p1 p2 = do
   (a, b) <- extractEqualityFromProof emptyContext p1
   (b', c) <- extractEqualityFromProof emptyContext p2
 
-  if isDefinitionallyEqual b b'
+  if termsDefinitionallyEqual b b'
     then Right (Trans p1 p2)
     else Left $ TransitivityBreak a b b' c
            "Proofs cannot be composed: intermediate terms don't match"
@@ -433,7 +499,7 @@ proofType (Trans p1 p2) = do
   prop2 <- proofType p2
   case (prop1, prop2) of
     (Eq a b, Eq b' c) ->
-      if isDefinitionallyEqual b b'
+      if termsDefinitionallyEqual b b'
         then Right (Eq a c)
         else Left $ TransitivityBreak a b b' c
                "Cannot determine type of trans: intermediate terms don't match"

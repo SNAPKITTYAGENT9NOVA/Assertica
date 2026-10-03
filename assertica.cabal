@@ -17,6 +17,8 @@ library
         Assertica.Core.Assertion
         Assertica.Core.Equality
         Assertica.Core.Invariants
+        Assertica.Core.TypeEnv
+        Assertica.Core.TypeChecker
         Assertica.Core.ProofTerm
     build-depends:
         base >=4.16 && <5,
@@ -35,6 +37,7 @@ test-suite assertica-tests
         Test.Core.Assertion
         Test.Core.Equality
         Test.Core.Invariants
+        Test.Core.TypeChecker
         Test.Core.ProofTerm
     build-depends:
         base >=4.16 && <5,
