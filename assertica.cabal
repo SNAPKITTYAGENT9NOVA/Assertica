@@ -17,10 +17,14 @@ library
         Assertica.Core.Assertion
         Assertica.Core.Equality
         Assertica.Core.Invariants
+        Assertica.Core.Module
+        Assertica.Core.ModuleEnv
         Assertica.Core.TypeEnv
         Assertica.Core.TypeChecker
         Assertica.Core.ProofTerm
         Assertica.Core.Pattern
+        Assertica.Core.Termination
+        Assertica.Core.Positivity
         Assertica.Surface.AST
         Assertica.Surface.Lexer
         Assertica.Surface.Parser
@@ -42,8 +46,11 @@ test-suite assertica-tests
         Test.Core.Assertion
         Test.Core.Equality
         Test.Core.Invariants
+        Test.Core.Module
         Test.Core.TypeChecker
         Test.Core.ProofTerm
+        Test.Core.Termination
+        Test.Core.Positivity
         Test.Core.Pattern
         Test.Surface.Lexer
         Test.Surface.Parser
