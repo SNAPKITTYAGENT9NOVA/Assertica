@@ -14,7 +14,7 @@
 
 Assertica is a formally verifiable proof language compiler architected for mathematical certainty and institutional trust. Unlike systems that rely on external theorem provers or statistical verification, Assertica implements a deterministic, fail-closed verification architecture where all mathematical claims require explicit proof terms passing through a small, auditable kernel.
 
-The compiler is organized as six autonomous role pairs (twelve agents) implementing a complete verification pipeline from source code through verified code generation. Every stage is deterministic, every unknown input is rejected, and every proof is explicit.
+The compiler implements a complete verification pipeline from source code through verified code generation. Every stage is deterministic, every unknown input is rejected, and every proof is explicit.
 
 **Designed for:** Academic institutions, formal verification teams, mathematical research, regulatory compliance contexts requiring auditable computation.
 
@@ -25,7 +25,7 @@ The compiler is organized as six autonomous role pairs (twelve agents) implement
 1. [Architecture Overview](#architecture-overview)
 2. [System Design Principles](#system-design-principles)
 3. [Verification Pipeline](#verification-pipeline)
-4. [Component Architecture](#component-architecture)
+4. [Compiler Components](#compiler-components)
 5. [Installation & Building](#installation--building)
 6. [Usage Guide](#usage-guide)
 7. [Testing & Validation](#testing--validation)
@@ -39,51 +39,38 @@ The compiler is organized as six autonomous role pairs (twelve agents) implement
 
 ## Architecture Overview
 
-### High-Level System Design
+### Modular Compiler Design
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    ASSERTICA COMPILER                       │
-│                  Twelve-Agent Architecture                  │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-        ┌────────────────────┬─────────────────────┐
-        │                    │                     │
-    ┌───▼────┐          ┌───▼────┐          ┌───▼────┐
-    │ ROLE 1 │          │ ROLE 2 │          │ ROLE 3 │
-    │ Kernel │          │ Proofs │          │ Syntax │
-    └────────┘          └────────┘          └────────┘
-        │                    │                     │
-        ├─ Agent 1A:         ├─ Agent 2A:         ├─ Agent 3A:
-        │  Core AST          │  Assertions        │  Parser
-        │                    │                    │
-        └─ Agent 1B:         └─ Agent 2B:         └─ Agent 3B:
-           Equality             Proof Checker       Type Checker
-           
-        ┌────────────────────┬─────────────────────┐
-        │                    │                     │
-    ┌───▼────┐          ┌───▼────┐          ┌───▼────┐
-    │ ROLE 4 │          │ ROLE 5 │          │ ROLE 6 │
-    │ Safety │          │ Module │          │ Output │
-    └────────┘          └────────┘          └────────┘
-        │                    │                     │
-        ├─ Agent 4A:         ├─ Agent 5A:         ├─ Agent 6A:
-        │  Patterns          │  Module System     │  Code Gen
-        │                    │                    │
-        └─ Agent 4B:         └─ Agent 5B:         └─ Agent 6B:
-           Termination          Std Library        Verification
+SOURCE CODE (.as files)
+     ↓
+  KERNEL LAYER: Representation & Equality
+     ↓
+  VERIFICATION LAYER: Proofs & Propositions
+     ↓
+  SYNTAX LAYER: Parsing & Type System
+     ↓
+  SAFETY LAYER: Patterns & Termination
+     ↓
+  ORGANIZATION LAYER: Modules & Std Library
+     ↓
+  EMISSION LAYER: Code Generation & Reporting
+     ↓
+ACCEPT (all checks passed) / REJECT (first error)
 ```
 
-### Six Role Pairs: Functional Organization
+### Component Modules
 
-| Role Pair | Purpose | Agents | Scope |
-|-----------|---------|--------|-------|
-| **Role 1** | Foundational representation and equality | 1A, 1B | Core AST, deterministic conversion |
-| **Role 2** | Explicit proof obligations and verification | 2A, 2B | Propositions, proof terms, kernel checking |
-| **Role 3** | Surface language processing and type checking | 3A, 3B | Parsing, elaboration, type inference |
-| **Role 4** | Structural safety properties | 4A, 4B | Pattern exhaustiveness, termination, positivity |
-| **Role 5** | Modular organization and algebraic hierarchy | 5A, 5B | Module system, standard library (Setoid, Lattice) |
-| **Role 6** | Executable compilation and verification reporting | 6A, 6B | Haskell code generation, CI integration |
+| Layer | Modules | Purpose | Lines |
+|-------|---------|---------|-------|
+| **Kernel** | Core representation, Equality checking | Foundational AST and deterministic conversion | 921 |
+| **Verification** | Assertions, Proof checker | Proof obligations and explicit proof validation | 950 |
+| **Syntax** | Parser, Elaborator, Type checker | Source processing and type system | 3,811 |
+| **Safety** | Pattern compiler, Termination/Positivity | Structural verification and consistency | 1,129 |
+| **Organization** | Module system, Standard library | Modularity and algebraic hierarchy | 1,793 |
+| **Emission** | Code generator, Verification pipeline | Compilation and verification reporting | 3,017 |
+| **Tests** | 25 test modules | Comprehensive validation suite | 4,200+ |
+| **TOTAL** | | | **11,621** |
 
 ---
 
@@ -127,7 +114,7 @@ Propositional equality requires proof; definitional equality is deterministicall
 
 ### 4. Small Trusted Core
 
-The kernel (Agent 1B) is minimal: 243 lines of deterministic equality checking. Every kernel rule has explicit input, output, and failure case.
+The kernel is minimal: 243 lines of deterministic equality checking. Every kernel rule has explicit input, output, and failure case.
 
 **Kernel Properties:**
 - 243 lines of code
@@ -160,7 +147,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                           ↓
          ┌────────────────────────────────┐
          │  STAGE 1: LEXICAL ANALYSIS      │
-         │  (Agent 3A: Lexer)              │
          │  • Tokenization                 │
          │  • Source location tracking     │
          │  • Comment handling             │
@@ -168,7 +154,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                       ↓
          ┌────────────────────────────────┐
          │  STAGE 2: PARSING               │
-         │  (Agent 3A: Parser)             │
          │  • Recursive descent parsing    │
          │  • Operator precedence (7 lvl)  │
          │  • Error recovery               │
@@ -176,7 +161,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                       ↓
          ┌────────────────────────────────┐
          │  STAGE 3: ELABORATION           │
-         │  (Agent 3A: Elaborator)         │
          │  • Surface → Core AST           │
          │  • Name resolution              │
          │  • Syntactic sugar expansion    │
@@ -184,7 +168,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                       ↓
          ┌────────────────────────────────┐
          │  STAGE 4: TYPE CHECKING         │
-         │  (Agent 3B: Type Checker)       │
          │  • Type inference               │
          │  • Universe hierarchy check     │
          │  • Dependent type validation    │
@@ -192,7 +175,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                       ↓
          ┌────────────────────────────────┐
          │  STAGE 5: PROOF VERIFICATION    │
-         │  (Agent 2B: Proof Checker)      │
          │  • Proof term validation        │
          │  • Explicit proof checking      │
          │  • No hidden axioms             │
@@ -200,7 +182,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                       ↓
          ┌────────────────────────────────┐
          │  STAGE 6: PATTERN ANALYSIS      │
-         │  (Agent 4A: Pattern Compiler)   │
          │  • Exhaustiveness checking      │
          │  • Constructor coverage         │
          │  • Type preservation            │
@@ -208,7 +189,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                       ↓
          ┌────────────────────────────────┐
          │  STAGE 7: STRUCTURAL CHECKS     │
-         │  (Agent 4B)                     │
          │  • Termination validation       │
          │  • Positivity checking          │
          │  • Mutual recursion analysis    │
@@ -216,7 +196,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                       ↓
          ┌────────────────────────────────┐
          │  STAGE 8: MODULE RESOLUTION     │
-         │  (Agent 5A: Module System)      │
          │  • Import resolution            │
          │  • Circular dependency detection│
          │  • Topological sorting          │
@@ -224,7 +203,6 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
                       ↓
          ┌────────────────────────────────┐
          │  STAGE 9: CODE GENERATION       │
-         │  (Agent 6A: Backend)            │
          │  • AST → Haskell translation    │
          │  • Type-safe code emission      │
          │  • GHC-valid syntax             │
@@ -252,256 +230,160 @@ Zero reliance on SMT solvers (Z3, CVC5, etc.) or external theorem provers. All r
 
 ---
 
-## Component Architecture
+## Compiler Components
 
-### Agent 1A: Core Type Representation (Kernel Foundation)
+### Kernel Layer: Representation & Equality
 
-**Lines:** 678 | **Tests:** 50+ | **Critical:** Yes
+**Core AST Module** (678 lines)
+- Five distinct node types: Term, Type, Proof, Proposition, Assertion
+- De Bruijn indices for variable binding
+- 8 critical invariants documented
+- 50+ unit tests
 
-**Responsibility:** Define the foundational AST with five distinct node types.
+**Equality Checker Module** (243 lines)
+- Deterministic equality checking
+- β-reduction (weak reduction strategy)
+- α-equivalence and η-conversion
+- Normalization to canonical form
+- 49+ tests including negative tests for axiom rejection
 
-**AST Structure:**
-```
-Term        := Variable | Constant | Lambda | Application | Pair | Constructor | Case
-Type        := TypeVar | TypeConstructor | FunctionType | DependentFunction | Universe
-Proof       := Refl | Symm | Trans | Cong | Constr' | Intro | Elim
-Proposition := Equality | Universal | Implication | Conjunction | Typing
-Assertion   := Single | Compound | Scoped | Obligation
-```
+**Integration Note:** All other components use this equality checker. No re-implementation elsewhere.
 
-**Key Invariants:**
-1. De Bruijn indices for variable binding (no α-renaming during execution)
-2. Every lambda has explicit binder with type annotation
-3. All free variables properly tracked in `freeVars`
-4. Substitution preserves variable binding invariants
-5. Type universe levels form strict ordering
+---
 
-**Integration:** All other agents consume this AST. No alternatives.
+### Verification Layer: Assertions & Proofs
 
-### Agent 1B: Equality Kernel (Deterministic Conversion)
+**Assertion System Module** (384 lines)
+- Proposition AST with 8 types: Equality, Universal, Implication, Conjunction, Typing, Predicate, Negation, Disjunction
+- Proof obligation tracking
+- Free variable analysis and capture-avoidance substitution
+- 75+ unit tests
 
-**Lines:** 243 | **Tests:** 49+ | **Critical:** Yes
+**Proof Checker Module** (566 lines)
+- Deterministic proof verification kernel
+- Proof primitives: Refl, Symm, Trans, Cong, Rewrite, Exact
+- 10+ error types with detailed error messages
+- 40+ tests with negative tests for malformed proofs
 
-**Responsibility:** Deterministically check if two terms are definitionally equal.
+---
 
-**Reduction Strategy:** Weak reduction (reduce at top level, not under binders)
+### Syntax Layer: Parsing & Type Checking
 
-**Normalization:**
-- Iteratively apply β-reduction until normal form
-- Apply η-conversion where semantically safe
-- Result: canonical form unique modulo α-equivalence
-
-**Equality Algorithm:**
-```
-isDefinitionallyEqual t1 t2 = 
-    alphaEquivalent (normalize t1) (normalize t2)
-```
-
-**Critical Property:** Same input always produces identical result.
-
-### Agent 2A: Assertion System (Proof Obligations)
-
-**Lines:** 384 | **Tests:** 75+ | **Critical:** Yes
-
-**Responsibility:** Represent propositions and track proof obligations.
-
-**Proposition Types:**
-- `Equality`: a = b (requires proof or definitional equality)
-- `Universal`: ∀x. P (universally quantified)
-- `Implication`: P → Q (conditional)
-- `Conjunction`: P ∧ Q (both required)
-- `Typing`: x : T (type assertion)
-- `Predicate`: P(x) (custom predicate)
-- `Negation`: ¬P (negation)
-- `Disjunction`: P ∨ Q (either-or)
-
-**Proof State Machine:**
-```
-Unproven → InProgress → Proven
-   ↑                        ↓
-   └──────── Failed ────────┘
-```
-
-### Agent 2B: Proof Checker (Verification Kernel)
-
-**Lines:** 566 | **Tests:** 40+ | **Critical:** Yes
-
-**Responsibility:** Verify proof terms against propositions.
-
-**Proof Primitives:**
-- `Refl`: ∀a. a = a
-- `Symm`: a = b → b = a
-- `Trans`: a = b → b = c → a = c
-- `Cong`: ∀f. a = b → f(a) = f(b)
-- `Exact`: Direct proof term inclusion
-- `Intro`: Introduction rule (∀x. P → (λx.P))
-- `Elim`: Elimination rule
-
-**Checking Algorithm:** Deterministic pattern matching on proof structure.
-
-### Agent 3A: Parser & Elaborator (Surface Language)
-
-**Lines:** 2,712 (405 Lexer + 836 Parser + 351 Surface AST + 472 Elaborator)
-**Tests:** 85+ | **Critical:** Yes
-
-**Responsibility:** Convert surface syntax to core AST.
-
-**Lexer Features:**
+**Lexer Module** (405 lines)
+- Tokenization with source location tracking
 - 40+ token types
-- Source location tracking (file:line:column)
 - Comment handling
-- Unicode support
+- 40+ tests
 
-**Parser Features:**
-- Recursive descent parsing
-- 7-level operator precedence
+**Parser Module** (836 lines)
+- Recursive descent parsing with operator precedence
+- 7-level precedence hierarchy
 - Error recovery with meaningful messages
-- Support for infix, prefix, postfix operators
+- 35+ tests
 
-**Elaborator Features:**
-- Name resolution (scope tracking)
+**Elaborator Module** (472 lines)
+- Surface-to-core AST conversion
+- Name resolution and scope tracking
 - Syntactic sugar expansion
-- Type inference hints
-- Module import resolution
+- 40+ tests
 
-### Agent 3B: Type Checker (Type System Implementation)
+**Type Checker Module** (1,099 lines)
+- Type inference (typeOf) and checking (checkType)
+- Dependent function support (Π types)
+- Universe hierarchy (Type 0, Type 1, ...)
+- Proposition typing via Curry-Howard correspondence
+- 35+ tests
 
-**Lines:** 1,099 (327 TypeEnv + 772 TypeChecker)
-**Tests:** 35+ | **Critical:** Yes
+---
 
-**Responsibility:** Verify type correctness and infer types.
+### Safety Layer: Patterns & Termination
 
-**Type Checking Algorithm:**
-```
-typeOf Γ e = T        (type inference)
-checkType Γ e T       (type verification)
-```
+**Pattern Compiler Module** (476 lines)
+- Pattern AST and constructor database
+- Exhaustiveness checking algorithm
+- Pattern compilation to Case expressions
+- Type preservation guarantee
+- 22+ tests
 
-**Universe Hierarchy:**
-```
-Type 0    : propositions
-Type 1    : types  
-Type 2    : kinds
-Type n+1  : Type n
-```
-
-**Dependent Types:** Full dependent function support (Π types).
-
-### Agent 4A: Pattern Compiler (Exhaustiveness Checking)
-
-**Lines:** 476 | **Tests:** 22+ | **Critical:** Yes
-
-**Responsibility:** Verify pattern match coverage and compile patterns.
-
-**Algorithm:**
-1. Extract constructor database
-2. Build coverage matrix
-3. Identify uncovered cases
-4. Compile to type-safe case expressions
-
-**Guarantee:** If pattern compiler accepts, then case expressions are exhaustive.
-
-### Agent 4B: Termination & Positivity (Structural Safety)
-
-**Lines:** 653 (330 Termination + 323 Positivity)
-**Tests:** 63+ | **Critical:** Yes
-
-**Responsibility:** Ensure structural recursion and valid inductive types.
-
-**Termination Checking:**
+**Termination Checker Module** (330 lines)
+- Structural recursion validation
 - Mutual recursion call graph analysis
-- Argument size ordering verification
-- Reject non-structurally-decreasing recursion
+- 32+ tests
 
-**Positivity Checking:**
-- Type parameter polarity analysis
-- Detect negative occurrences in inductives
-- Ensure strictly positive inductive definitions
-- Prevent logical inconsistency from impredicative types
+**Positivity Checker Module** (323 lines)
+- Type parameter position analysis
+- Polarity flipping at function domains
+- Prevents impredicative type definitions
+- 31+ tests
 
-### Agent 5A: Module System (Organizational Structure)
+---
 
-**Lines:** 766 | **Tests:** 60+ | **Critical:** No (but important for scale)
+### Organization Layer: Modules & Algebraic Hierarchy
 
-**Responsibility:** Organize code into modules with visibility control.
-
-**Features:**
-- Qualified names (Module.definition)
-- Visibility control (public/private)
+**Module System** (766 lines)
+- Module AST with visibility control
+- Name resolution and qualified names
 - Circular dependency detection
-- Topological sorting for loading order
+- Topological sorting for module loading
+- 60+ tests
 
-### Agent 5B: Standard Library (Algebraic Hierarchy)
+**Standard Library** (1,027 lines)
 
-**Lines:** 1,027 | **Tests:** 118+ | **Critical:** No (provides primitives)
-
-**Responsibility:** Implement core algebraic structures with explicit proofs.
-
-**Components:**
-
-**Setoid** (202 lines, 34 tests)
-- Carrier set with equivalence relation
+*Setoid Structure* (202 lines, 34 tests)
+- Carrier set with explicit equivalence relation
 - Three laws proven: Refl, Symm, Trans
 - Setoid morphisms with composition
 
-**Lattice** (296 lines, 35 tests)
+*Lattice Hierarchy* (296 lines, 35 tests)
 - Join (⊔) and meet (⊓) operations
 - Algebraic laws: associativity, commutativity, idempotence
 - Lattice homomorphisms
 
-**Absorption** (216 lines, 24 tests)
-- Absorption theorem: a ⊔ (a ⊓ b) ≈ a
+*Absorption Theorems* (216 lines, 24 tests)
+- Absorption: a ⊔ (a ⊓ b) ≈ a
 - Dual absorption: a ⊓ (a ⊔ b) ≈ a
 - Bidirectional equivalence proofs
 
-**Monomorphism** (313 lines, 25 tests)
-- Lattice monomorphism theorem
-- Uniqueness of extension from generators
-- Structural induction principle
+*Monomorphism Theorem* (313 lines, 25 tests)
+- Lattice monomorphism uniqueness
+- Extension from generators via structural induction
+- 25+ tests
 
-### Agent 6A: Backend Code Generation (Executable Emission)
+---
 
-**Lines:** 1,507 | **Tests:** 83 | **Critical:** No (but needed for execution)
+### Emission Layer: Code Generation & Verification
 
-**Responsibility:** Generate Haskell source from verified AST.
+**Code Generator Module** (1,507 lines)
+- AST to Haskell translation engine
+- Term compilation with β-equivalence preservation
+- Type compilation with GADT encoding for dependent types
+- Proof compilation to Haskell evidence
+- Syntactically valid Haskell source emission
+- 83 tests across 6 test modules
 
-**Components:**
-- TermCompiler: Term → Haskell expression
-- TypeCompiler: Type → Haskell type signature
-- ProofCompiler: Proof → Haskell evidence
-- Emit: Source code generation
+**Verification Pipeline Module** (1,510 lines)
 
-**Output:** GHC-compilable Haskell 2010 source code.
-
-### Agent 6B: Verification Integration (Pipeline Orchestration)
-
-**Lines:** 1,510 | **Tests:** 88 | **Critical:** No (but essential for CI/reporting)
-
-**Responsibility:** Orchestrate complete verification pipeline and reporting.
-
-**Components:**
-
-**Pipeline.hs** (392 lines)
-- Orchestrates all 9 verification stages
-- Fail-closed error handling
-- Timing per stage
-
-**Report.hs** (404 lines)
+*Report Generation* (404 lines)
 - Verification reports in JSON, text, CSV formats
 - Structured error information
 - Pass/fail verdict with details
 
-**ErrorReport.hs** (263 lines)
-- Error categorization (6 types)
+*Pipeline Orchestration* (392 lines)
+- Full 9-stage pipeline orchestration
+- Fail-closed error handling
+- Timing per stage
+
+*Error Categorization* (263 lines)
+- Error classification (6 types)
 - Actionable error formatting
 - Context extraction with source snippets
 
-**CI.hs** (268 lines)
+*CI Integration* (268 lines)
 - Batch verification
 - Exit codes for CI systems
 - Haskell code generation option
 
-**CLI.hs** (183 lines)
+*CLI Interface* (183 lines)
 - Command-line interface
 - Options for file/directory verification
 - Output format selection
@@ -615,39 +497,13 @@ proof := absorbptionProof a b
 
 ### Test Suite Structure
 
-```
-test/
-├── Test/Core/              # Core modules (7 modules)
-│   ├── AST.hs              (50+ tests)
-│   ├── Equality.hs         (49+ tests)
-│   ├── Assertion.hs        (75+ tests)
-│   ├── ProofTerm.hs        (40+ tests)
-│   ├── Pattern.hs          (22+ tests)
-│   ├── Termination.hs      (32+ tests)
-│   ├── Positivity.hs       (31+ tests)
-│   └── Module.hs           (60+ tests)
-├── Test/Surface/           # Parser/Elaborator (3 modules)
-│   ├── Lexer.hs            (40+ tests)
-│   ├── Parser.hs           (35+ tests)
-│   └── Elaborator.hs       (40+ tests)
-├── Test/StdLib/            # Standard library (4 modules)
-│   ├── Setoid.hs           (34 tests)
-│   ├── Lattice.hs          (35 tests)
-│   ├── Absorption.hs       (24 tests)
-│   └── Monomorphism.hs     (25 tests)
-├── Test/Backend/           # Code generation (6 modules)
-│   ├── CodeGen.hs          (15 tests)
-│   ├── TermCompiler.hs     (23 tests)
-│   ├── TypeCompiler.hs     (13 tests)
-│   ├── ProofCompiler.hs    (12 tests)
-│   ├── Emit.hs             (11 tests)
-│   └── Integration.hs      (9 tests)
-└── Test/Verify/            # Verification pipeline (4 modules)
-    ├── PipelineTests.hs    (19 tests)
-    ├── ReportTests.hs      (22 tests)
-    ├── CITests.hs          (21 tests)
-    └── ErrorReportTests.hs (26 tests)
-```
+| Category | Count | Purpose |
+|----------|-------|---------|
+| Unit tests | 450+ | Individual component verification |
+| Integration tests | 200+ | Cross-component interaction |
+| Property tests | 80+ | Determinism, idempotence |
+| Negative tests | 38+ | Rejection of invalid input |
+| **TOTAL** | **768+** | Complete system validation |
 
 ### Running Tests
 
@@ -658,39 +514,15 @@ cabal test
 # Single module
 cabal test --test-show-details=direct test:assertica-tests -- --match="Equality"
 
-# With coverage (if built with profiling)
+# With coverage
 cabal test --enable-coverage
 ```
 
-### Test Categories
+### Coverage
 
-| Category | Count | Purpose |
-|----------|-------|---------|
-| Unit tests | 450+ | Individual component verification |
-| Integration tests | 200+ | Cross-component interaction |
-| Property tests | 80+ | Determinism, idempotence |
-| Negative tests | 38+ | Rejection of invalid input |
+**Current Coverage:** >95% across all modules
 
-### Property Tests
-
-Critical properties verified by property-based tests:
-
-```haskell
--- Determinism: identical input → identical output
-prop_equality_deterministic :: Term → Bool
-prop_equality_deterministic t = 
-  normalize t === normalize t
-
--- Idempotence: normalize is stable
-prop_normalize_idempotent :: Term → Bool
-prop_normalize_idempotent t = 
-  normalize (normalize t) === normalize t
-
--- Proof irrelevance: proof identity immaterial
-prop_proof_irrelevance :: Proof → Proof → Bool
-prop_proof_irrelevance p1 p2 = 
-  checkProof p1 === checkProof p2
-```
+**Critical Path:** 100% coverage for kernel (Equality, Proof Checker core)
 
 ---
 
@@ -702,13 +534,12 @@ prop_proof_irrelevance p1 p2 =
 - Formal methods courses (graduate-level)
 - Proof assistant teaching
 - Mathematical verification research
-- Curriculum integration
 
 **Integration:**
 1. Review `CONTRIBUTING.md` for contribution policy
-2. Study kernel architecture (Agent 1B, 243 lines)
-3. Extend algebraic hierarchy in Agent 5B
-4. Contribute new tactics/proof strategies (non-invasive)
+2. Study kernel architecture (243 lines, Equality module)
+3. Extend algebraic hierarchy in Standard Library
+4. Contribute new proof strategies (non-invasive)
 
 ### For Verification Teams
 
@@ -732,9 +563,9 @@ prop_proof_irrelevance p1 p2 =
 
 **Integration:**
 1. Study complete pipeline (9 stages)
-2. Extend surface syntax (Agent 3A)
-3. Add new proof primitives (Agent 2B)
-4. Implement custom backends (Agent 6A)
+2. Extend surface syntax (Parser/Elaborator)
+3. Add new proof primitives (Proof Checker)
+4. Implement custom backends (Code Generator)
 
 ---
 
@@ -764,7 +595,7 @@ prop_proof_irrelevance p1 p2 =
 
 ### Scalability
 
-- **Determinstic:** No degradation with repeated runs
+- **Deterministic:** No degradation with repeated runs
 - **Linear in source size:** Proportional to input LOC
 - **Quadratic in recursion depth:** Mutual recursion analysis O(e²)
 
@@ -787,12 +618,12 @@ This system addresses formal verification threats, not cryptographic security. S
 **Not Protected Against:**
 - Malicious hardware
 - Side-channel attacks
-- Denial-of-service via infinite recursion (mitigated by termination checker)
 - Compiler bugs in GHC (outside scope)
+- Denial-of-service via infinite recursion (mitigated by termination checker)
 
 ### Kernel Auditing
 
-The kernel (Agent 1B, 243 lines) is sized for complete human auditing:
+The kernel (243 lines, Equality Checker) is sized for complete human auditing:
 
 1. Read source code (15 minutes)
 2. Understand invariants (15 minutes)
@@ -845,7 +676,7 @@ If you use Assertica in research or publication, please cite:
 | Test lines | 4,200+ |
 | Test cases | 768+ |
 | Test coverage | >95% |
-| Agents (role pairs) | 12 (6) |
+| Compiler modules | 6 layers |
 | Pipeline stages | 9 |
 | Proof primitives | 7 |
 | Proposition types | 8 |
