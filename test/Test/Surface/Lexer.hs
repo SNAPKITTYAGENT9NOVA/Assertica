@@ -5,7 +5,7 @@ Copyright   : (c) 2026 Ahmad Ali Parr
 License     : MIT
 -}
 
-module Test.Surface.Lexer (lexerTests) where
+module Test.Surface.Lexer (tests) where
 
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=), Assertion)
@@ -16,8 +16,8 @@ import Assertica.Surface.AST (SourceLoc(..))
 -- LEXER TESTS
 -- ============================================================================
 
-lexerTests :: TestTree
-lexerTests = testGroup "Lexer Tests"
+tests :: TestTree
+tests = testGroup "Assertica.Surface.Lexer"
   [ testGroup "Keywords"
       [ testCase "lex 'let'" $
           lexKeyword "let" KwLet
