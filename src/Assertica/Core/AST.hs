@@ -68,6 +68,7 @@ module Assertica.Core.AST
   , prettyProof
   , prettyProposition
   , prettyAssertion
+  , prettyPattern
   ) where
 
 import Data.List (intercalate)
