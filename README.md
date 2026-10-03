@@ -1,7 +1,7 @@
 # Assertica: Deterministic Proof Language Compiler
 
 ![Status](https://img.shields.io/badge/status-production%20ready-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-blue)
+![License](https://img.shields.io/badge/license-BSL%201.0-blue)
 ![Language](https://img.shields.io/badge/language-Haskell-purple)
 ![Tests](https://img.shields.io/badge/tests-768%2B-green)
 ![Coverage](https://img.shields.io/badge/coverage-%3E95%25-brightgreen)
@@ -519,7 +519,7 @@ If you use Assertica in research or publication, please cite:
 
 ## License
 
-MIT License. See LICENSE file for details.
+Boost Software License (BSL) 1.0. See LICENSE file for details.
 
 ## Support
 

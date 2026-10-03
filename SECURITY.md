@@ -516,7 +516,7 @@ sha256sum result
 ### Vendor Lock-in Resistance
 
 Assertica is:
-- Open source (MIT license)
+- Open source (Boost Software License 1.0)
 - Self-contained (no proprietary dependencies)
 - Portable (runs on any system with GHC 9.2+)
 - Forkable (easy to fork if needed)

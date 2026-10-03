@@ -1,7 +1,7 @@
 cabal-version: 3.0
 name: assertica
 version: 0.1.0.0
-license: MIT
+license: BSL-1.0
 author: Ahmad Ali Parr
 maintainer: ahmedparr93@gmail.com
 
