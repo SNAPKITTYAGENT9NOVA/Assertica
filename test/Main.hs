@@ -7,6 +7,7 @@ import qualified Test.Core.Equality as Equality
 import qualified Test.Core.Invariants as Invariants
 import qualified Test.Core.ProofTerm as ProofTerm
 import qualified Test.Core.TypeChecker as TypeChecker
+import qualified Test.Core.Pattern as Pattern
 import qualified Test.Surface.Lexer as SurfaceLexer
 import qualified Test.Surface.Parser as SurfaceParser
 import qualified Test.Surface.Elaborator as SurfaceElaborator
@@ -21,6 +22,7 @@ tests = testGroup "Assertica"
   , Invariants.tests
   , ProofTerm.tests
   , TypeChecker.tests
+  , Pattern.tests
   , SurfaceLexer.tests
   , SurfaceParser.tests
   , SurfaceElaborator.tests
