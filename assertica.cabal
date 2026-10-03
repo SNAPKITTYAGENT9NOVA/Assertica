@@ -20,6 +20,10 @@ library
         Assertica.Core.TypeEnv
         Assertica.Core.TypeChecker
         Assertica.Core.ProofTerm
+        Assertica.Surface.AST
+        Assertica.Surface.Lexer
+        Assertica.Surface.Parser
+        Assertica.Surface.Elaborator
     build-depends:
         base >=4.16 && <5,
         containers >=0.6,
@@ -39,6 +43,9 @@ test-suite assertica-tests
         Test.Core.Invariants
         Test.Core.TypeChecker
         Test.Core.ProofTerm
+        Test.Surface.Lexer
+        Test.Surface.Parser
+        Test.Surface.Elaborator
     build-depends:
         base >=4.16 && <5,
         assertica,
