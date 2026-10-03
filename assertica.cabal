@@ -1,0 +1,60 @@
+cabal-version: 3.0
+name: assertica
+version: 0.1.0.0
+license: MIT
+author: Ahmad Ali Parr
+maintainer: ahmedparr93@gmail.com
+
+common warnings
+    ghc-options: -Wall -Wcompat -Wincomplete-record-updates
+                 -Wincomplete-uni-patterns -Wredundant-constraints
+                 -fno-warn-unticked-promoted-constructors
+
+library
+    import: warnings
+    exposed-modules:
+        Assertica.Core.AST
+        Assertica.Core.Assertion
+        Assertica.Core.Equality
+        Assertica.Core.Invariants
+        Assertica.Core.TypeEnv
+        Assertica.Core.TypeChecker
+        Assertica.Core.ProofTerm
+        Assertica.Surface.AST
+        Assertica.Surface.Lexer
+        Assertica.Surface.Parser
+        Assertica.Surface.Elaborator
+    build-depends:
+        base >=4.16 && <5,
+        containers >=0.6,
+        text >=1.2,
+        mtl >=2.2
+    hs-source-dirs: src
+    default-language: Haskell2010
+
+test-suite assertica-tests
+    import: warnings
+    type: exitcode-stdio-1.0
+    main-is: Main.hs
+    other-modules:
+        Test.Core.AST
+        Test.Core.Assertion
+        Test.Core.Equality
+        Test.Core.Invariants
+        Test.Core.TypeChecker
+        Test.Core.ProofTerm
+        Test.Surface.Lexer
+        Test.Surface.Parser
+        Test.Surface.Elaborator
+    build-depends:
+        base >=4.16 && <5,
+        assertica,
+        containers >=0.6,
+        text >=1.2,
+        mtl >=2.2,
+        tasty >=1.4,
+        tasty-hunit >=0.10,
+        tasty-quickcheck >=0.10,
+        QuickCheck >=2.14
+    hs-source-dirs: test
+    default-language: Haskell2010
