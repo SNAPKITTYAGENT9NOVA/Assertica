@@ -29,6 +29,10 @@ library
         Assertica.Surface.Lexer
         Assertica.Surface.Parser
         Assertica.Surface.Elaborator
+        Assertica.StdLib.Setoid
+        Assertica.StdLib.Lattice
+        Assertica.StdLib.Absorption
+        Assertica.StdLib.Monomorphism
     build-depends:
         base >=4.16 && <5,
         containers >=0.6,
@@ -55,6 +59,10 @@ test-suite assertica-tests
         Test.Surface.Lexer
         Test.Surface.Parser
         Test.Surface.Elaborator
+        Test.StdLib.Setoid
+        Test.StdLib.Lattice
+        Test.StdLib.Absorption
+        Test.StdLib.Monomorphism
     build-depends:
         base >=4.16 && <5,
         assertica,
