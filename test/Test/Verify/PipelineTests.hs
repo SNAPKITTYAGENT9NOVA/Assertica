@@ -2,7 +2,7 @@
 Module      : Test.Verify.PipelineTests
 Description : Unit and integration tests for verification pipeline
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Comprehensive tests for the verification pipeline covering:
 - Individual stage execution

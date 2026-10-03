@@ -4,7 +4,7 @@
 Module      : Assertica.Verify.Pipeline
 Description : Main verification pipeline orchestrator
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 The verification pipeline orchestrates the complete compilation and verification workflow:
 

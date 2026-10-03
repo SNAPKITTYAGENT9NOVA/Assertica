@@ -6,7 +6,7 @@
 Module      : Assertica.Core.ProofTerm
 Description : Deterministic proof-term checker for explicit proofs
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 The proof-term checker verifies explicit proof terms against propositions.
 This module implements the trusted kernel that validates proof obligations.

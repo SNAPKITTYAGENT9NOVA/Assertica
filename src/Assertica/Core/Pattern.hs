@@ -6,7 +6,7 @@
 Module      : Assertica.Core.Pattern
 Description : Pattern matching compilation and exhaustiveness checking
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module implements pattern matching compilation: transforming surface pattern
 syntax into core eliminators that preserve type information and exhaustiveness

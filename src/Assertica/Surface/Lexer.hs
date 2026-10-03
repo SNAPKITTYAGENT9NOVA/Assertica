@@ -2,7 +2,7 @@
 Module      : Assertica.Surface.Lexer
 Description : Lexer for Haskell-like surface syntax
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Tokenizes Haskell-like source code into a stream of tokens,
 preserving source location information for error reporting.

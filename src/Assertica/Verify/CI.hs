@@ -4,7 +4,7 @@
 Module      : Assertica.Verify.CI
 Description : CI integration for batch verification and reporting
 Copyright   : (c) 2026 Ahmad Ali Proofs
-License     : MIT
+License     : BSL-1.0
 
 Provides functionality for CI systems to verify multiple files and generate
 aggregated reports suitable for consumption by CI platforms.

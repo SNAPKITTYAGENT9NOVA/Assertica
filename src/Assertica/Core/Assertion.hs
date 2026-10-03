@@ -6,7 +6,7 @@
 Module      : Assertica.Core.Assertion
 Description : Explicit assertion system for mathematical obligations
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 The assertion system represents mathematical obligations as first-class program entities.
 An assertion is an explicit proof goal that must be discharged by the proof-term checker.

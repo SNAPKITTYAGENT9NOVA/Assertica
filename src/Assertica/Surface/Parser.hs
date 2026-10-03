@@ -2,7 +2,7 @@
 Module      : Assertica.Surface.Parser
 Description : Parser for Haskell-like surface syntax
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Recursive descent parser that converts a token stream into the surface AST.
 Implements operator precedence and handles syntactic sugar expansion.

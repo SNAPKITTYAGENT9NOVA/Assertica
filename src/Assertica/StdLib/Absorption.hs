@@ -2,7 +2,7 @@
 Module      : Assertica.StdLib.Absorption
 Description : Absorption theorem proofs for lattices
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module proves the ABSORPTION LAWS for lattices:
 

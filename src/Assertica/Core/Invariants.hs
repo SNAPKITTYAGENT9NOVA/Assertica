@@ -2,7 +2,7 @@
 Module      : Assertica.Core.Invariants
 Description : Kernel invariants for the equality checking subsystem
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module defines the critical invariants that the equality checker MUST maintain.
 Violation of these invariants can only be caused by bugs in the implementation.

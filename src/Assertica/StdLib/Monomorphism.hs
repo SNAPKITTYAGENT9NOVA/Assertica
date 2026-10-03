@@ -2,7 +2,7 @@
 Module      : Assertica.StdLib.Monomorphism
 Description : Lattice monomorphism theorem with explicit proofs
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module proves the LATTICE MONOMORPHISM THEOREM:
 

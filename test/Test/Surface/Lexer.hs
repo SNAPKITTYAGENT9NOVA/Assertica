@@ -2,7 +2,7 @@
 Module      : Test.Surface.Lexer
 Description : Unit tests for the lexer
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 -}
 
 module Test.Surface.Lexer (tests) where

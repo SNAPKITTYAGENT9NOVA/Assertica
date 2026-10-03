@@ -2,7 +2,7 @@
 Module      : Test.Surface.Parser
 Description : Unit tests for the parser
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 -}
 
 module Test.Surface.Parser (tests) where

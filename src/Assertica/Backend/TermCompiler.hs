@@ -5,7 +5,7 @@
 Module      : Assertica.Backend.TermCompiler
 Description : Compile Assertica terms to Haskell expressions
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Translates computational terms from the Core AST to Haskell expressions:
 

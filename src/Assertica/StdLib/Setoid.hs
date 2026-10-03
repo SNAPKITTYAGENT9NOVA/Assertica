@@ -2,7 +2,7 @@
 Module      : Assertica.StdLib.Setoid
 Description : Setoid algebraic structure: a carrier set with explicit equivalence relation
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module implements the Setoid structure, which forms the foundation of the
 algebraic hierarchy. A Setoid is a type S equipped with an equivalence relation (≈)

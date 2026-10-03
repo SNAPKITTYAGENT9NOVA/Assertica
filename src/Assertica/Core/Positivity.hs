@@ -6,7 +6,7 @@
 Module      : Assertica.Core.Positivity
 Description : Positivity checking for inductive type definitions
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module implements positivity checking to ensure inductive type definitions
 are strictly positive. A type parameter is strictly positive if it appears only

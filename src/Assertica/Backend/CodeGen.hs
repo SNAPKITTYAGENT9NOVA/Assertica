@@ -5,7 +5,7 @@
 Module      : Assertica.Backend.CodeGen
 Description : Main code generation engine for Assertica → Haskell compilation
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module is the primary interface for translating verified Assertica Core AST
 to executable Haskell code. It orchestrates the compilation pipeline:

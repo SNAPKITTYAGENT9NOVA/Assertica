@@ -5,7 +5,7 @@
 Module      : Assertica.Backend.ProofCompiler
 Description : Compile Assertica proofs to Haskell evidence
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Translates proof terms from the Core AST to Haskell evidence terms:
 

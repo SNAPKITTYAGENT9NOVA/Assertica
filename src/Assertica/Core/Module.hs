@@ -6,7 +6,7 @@
 Module      : Assertica.Core.Module
 Description : Module system for proof library organization
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 The Module system provides namespace management, visibility control, and clean
 separation of concerns for large proof libraries. It enables:

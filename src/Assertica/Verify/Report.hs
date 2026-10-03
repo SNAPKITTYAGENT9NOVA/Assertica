@@ -5,7 +5,7 @@
 Module      : Assertica.Verify.Report
 Description : Verification report structures and serialization
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 The VerificationReport captures the complete result of verifying a file or module,
 including the results at each pipeline stage, detailed errors, and the final verdict.

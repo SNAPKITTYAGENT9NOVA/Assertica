@@ -2,7 +2,7 @@
 Module      : Assertica.Surface.Elaborator
 Description : Elaborator from surface AST to core AST
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Converts the surface (intermediate) AST into the core AST.
 Performs:
