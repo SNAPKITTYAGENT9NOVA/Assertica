@@ -570,18 +570,18 @@ git commit -s  # Automatically sign-off
 
 ## Architecture Constraints
 
-### Role Pair Boundaries
+### Module Boundaries
 
-Contributions must respect role pair ownership:
+Contributions must respect module architecture boundaries:
 
-| Role | Agents | Contribution Allowed | Contribution Forbidden |
-|------|--------|----------------------|------------------------|
-| 1 | 1A, 1B | Tests, documentation | Core AST, equality logic |
-| 2 | 2A, 2B | Proof primitives, tests | Proof checker core logic |
-| 3 | 3A, 3B | Surface syntax, type inference tests | Type system fundamentals |
-| 4 | 4A, 4B | New safety checks | Pattern/termination algorithms |
-| 5 | 5A, 5B | Algebraic structures, standard library | Module system core |
-| 6 | 6A, 6B | Code generation backends, CLI | Pipeline orchestration |
+| Layer | Modules | Contribution Allowed | Contribution Forbidden |
+|-------|---------|----------------------|------------------------|
+| **Kernel** | Core AST, Equality Checker | Tests, documentation | Core AST, equality logic |
+| **Verification** | Assertion System, Proof Checker | Proof primitives, tests | Proof checker core logic |
+| **Syntax** | Parser/Elaborator, Type Checker | Surface syntax, type inference tests | Type system fundamentals |
+| **Safety** | Pattern Compiler, Termination/Positivity | New safety checks | Pattern/termination algorithms |
+| **Organization** | Module System, Standard Library | Algebraic structures, standard library | Module system core |
+| **Emission** | Code Generator, Verification Pipeline | Code generation backends, CLI | Pipeline orchestration |
 
 ### Invariants That Cannot Change
 
