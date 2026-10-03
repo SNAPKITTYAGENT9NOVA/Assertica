@@ -5,7 +5,7 @@ Copyright   : (c) 2026 Ahmad Ali Parr
 License     : MIT
 -}
 
-module Test.Surface.Elaborator (elaboratorTests) where
+module Test.Surface.Elaborator (tests) where
 
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=), Assertion, assertEqual)
@@ -20,8 +20,8 @@ import Data.Text (pack)
 -- ELABORATOR TESTS
 -- ============================================================================
 
-elaboratorTests :: TestTree
-elaboratorTests = testGroup "Elaborator Tests"
+tests :: TestTree
+tests = testGroup "Assertica.Surface.Elaborator"
   [ testGroup "Terms"
       [ testCase "elaborate variable" $
           elaborateTermTest "x" isVar

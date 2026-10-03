@@ -5,7 +5,7 @@ Copyright   : (c) 2026 Ahmad Ali Parr
 License     : MIT
 -}
 
-module Test.Surface.Parser (parserTests) where
+module Test.Surface.Parser (tests) where
 
 import Test.Tasty (TestTree, testGroup)
 import Test.Tasty.HUnit (testCase, (@?=), Assertion)
@@ -18,8 +18,8 @@ import Data.Text (pack)
 -- PARSER TESTS
 -- ============================================================================
 
-parserTests :: TestTree
-parserTests = testGroup "Parser Tests"
+tests :: TestTree
+tests = testGroup "Assertica.Surface.Parser"
   [ testGroup "Terms"
       [ testCase "parse variable" $
           parseTermTest "x" (STVar (pack "x"))
