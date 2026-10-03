@@ -39,22 +39,13 @@ The compiler implements a complete verification pipeline from source code throug
 
 ## Architecture Overview
 
-### Modular Compiler Design
+### Compiler Organization
 
 ```
 SOURCE CODE (.as files)
      ↓
-  KERNEL LAYER: Representation & Equality
-     ↓
-  VERIFICATION LAYER: Proofs & Propositions
-     ↓
-  SYNTAX LAYER: Parsing & Type System
-     ↓
-  SAFETY LAYER: Patterns & Termination
-     ↓
-  ORGANIZATION LAYER: Modules & Std Library
-     ↓
-  EMISSION LAYER: Code Generation & Reporting
+  VERIFICATION PIPELINE
+  (9 stages: parse, type-check, verify, generate)
      ↓
 ACCEPT (all checks passed) / REJECT (first error)
 ```
