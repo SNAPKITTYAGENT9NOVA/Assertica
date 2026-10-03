@@ -13,6 +13,9 @@ module Assertica.Core.AST
   , freeVars
   , boundVars
   , substitute
+  -- * Propositions (Agent 2A)
+  , Proposition(..)
+  , SourceLoc(..)
   ) where
 
 import qualified Data.Map.Strict as Map
@@ -124,3 +127,52 @@ freshenVar (Var v) term replacement =
   let occupied = Set.union (freeVars term) (freeVars replacement)
       candidates = map (\n -> Var (v ++ "_" ++ show n)) [1..]
   in head [c | c <- candidates, c `Set.notMember` occupied]
+
+-- ============================================================================
+-- Proposition AST (Agent 2A: Explicit Assertion System)
+-- ============================================================================
+
+-- | Source location information for error reporting
+data SourceLoc = SourceLoc
+  { sourcePath :: String
+  , lineNumber :: Int
+  , columnNumber :: Int
+  }
+  deriving (Eq, Show, Generic, Typeable)
+
+-- | A proposition represents a mathematical obligation
+-- These are NOT proofs, but proof goals that must be discharged by Agent 2B
+data Proposition
+  = -- | Equality proposition: a ≡ b
+    --   Two terms are structurally equal
+    EqualityProp Term Term
+
+  | -- | Universal quantification: ∀ x. P x
+    --   A property holds for all values of a variable
+    UniversalQuantProp Var Proposition
+
+  | -- | Implication: P → Q
+    --   If P holds, then Q must hold
+    ImplicationProp Proposition Proposition
+
+  | -- | Conjunction: P ∧ Q
+    --   Both P and Q must hold
+    ConjunctionProp Proposition Proposition
+
+  | -- | Type membership / typing proposition: x : T
+    --   A term has a particular type
+    TypingProp Term String  -- String is the type name (we can extend this later)
+
+  | -- | Predicate application: P(t1, t2, ...)
+    --   A named predicate applied to terms
+    PredicateApp String [Term]
+
+  | -- | Negation: ¬P
+    --   P does not hold
+    NegationProp Proposition
+
+  | -- | Disjunction: P ∨ Q
+    --   At least one of P or Q holds
+    DisjunctionProp Proposition Proposition
+
+  deriving (Eq, Show, Generic, Typeable)
