@@ -4,7 +4,7 @@
 Module      : Test.Core.Pattern
 Description : Unit tests for the pattern compiler (Agent 4A)
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Tests for:
 - Pattern AST construction and validation

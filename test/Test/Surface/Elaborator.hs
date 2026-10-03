@@ -2,7 +2,7 @@
 Module      : Test.Surface.Elaborator
 Description : Unit tests for the elaborator
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 -}
 
 module Test.Surface.Elaborator (tests) where

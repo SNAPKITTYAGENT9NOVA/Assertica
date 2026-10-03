@@ -2,7 +2,7 @@
 Module      : Assertica.Core.Equality
 Description : Deterministic, kernel-trusted equality checking and conversion
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module implements the core equality checking machinery for Assertica.
 It distinguishes between:

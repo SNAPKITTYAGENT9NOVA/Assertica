@@ -2,7 +2,7 @@
 Module      : Assertica.StdLib.Lattice
 Description : Lattice algebraic structure with explicit proof terms
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module implements lattice structures built on top of Setoid equivalence.
 

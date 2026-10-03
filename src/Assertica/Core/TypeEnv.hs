@@ -6,7 +6,7 @@
 Module      : Assertica.Core.TypeEnv
 Description : Type environment for tracking variable bindings and definitions
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 A type environment (Γ) maps variables to their types and tracks function/constant
 definitions with their signatures. This is the context used during type checking.

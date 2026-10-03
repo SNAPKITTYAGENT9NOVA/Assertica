@@ -4,7 +4,7 @@
 Module      : Assertica.Verify.ErrorReport
 Description : Error categorization, formatting, and fix suggestions
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Provides utilities for categorizing errors from different pipeline stages,
 formatting them consistently, and generating actionable fix suggestions.

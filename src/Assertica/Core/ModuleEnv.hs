@@ -6,7 +6,7 @@
 Module      : Assertica.Core.ModuleEnv
 Description : Module environment and qualified name resolution
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 The ModuleEnv manages loaded modules and handles name resolution:
 

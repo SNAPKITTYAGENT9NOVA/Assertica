@@ -6,7 +6,7 @@
 Module      : Assertica.Core.TypeChecker
 Description : Deterministic type checking for well-typed terms
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module implements the core type judgment:
 

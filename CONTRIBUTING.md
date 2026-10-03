@@ -221,7 +221,7 @@ test_buggy = assertEqual 3 (buggyFunction 2)
 Module      : Assertica.Component.SubComponent
 Description : One-line description
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL 1.0
 
 Detailed description of module purpose and responsibilities.
 Important invariants and guarantees.

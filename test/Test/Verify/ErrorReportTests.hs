@@ -2,7 +2,7 @@
 Module      : Test.Verify.ErrorReportTests
 Description : Tests for error categorization and formatting
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Tests covering:
 - Error categorization from messages

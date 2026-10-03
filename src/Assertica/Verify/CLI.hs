@@ -4,7 +4,7 @@
 Module      : Assertica.Verify.CLI
 Description : Command-line interface for verification
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Provides a command-line interface for running verification from the shell.
 

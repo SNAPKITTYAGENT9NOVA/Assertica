@@ -2,7 +2,7 @@
 Module      : Test.Verify.CITests
 Description : Tests for CI integration and batch reporting
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Tests covering:
 - Batch verification from multiple files

@@ -7,7 +7,7 @@
 Module      : Assertica.Core.AST
 Description : Core internal abstract syntax tree for the proof language
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 The AST is the trusted representation layer upon which all other agents depend.
 It maintains strong separation between Terms, Types, Proofs, Propositions, and Assertions.

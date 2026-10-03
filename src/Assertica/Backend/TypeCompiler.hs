@@ -5,7 +5,7 @@
 Module      : Assertica.Backend.TypeCompiler
 Description : Compile Assertica types to Haskell type signatures
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Translates type expressions from the Core AST to Haskell type syntax:
 

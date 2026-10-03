@@ -6,7 +6,7 @@
 Module      : Assertica.Surface.AST
 Description : Surface syntax abstract syntax tree (intermediate representation)
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 The surface AST represents the intermediate form after parsing Haskell-like syntax
 but before elaboration into the core AST. It preserves source locations for error

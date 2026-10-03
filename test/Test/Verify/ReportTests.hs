@@ -2,7 +2,7 @@
 Module      : Test.Verify.ReportTests
 Description : Tests for verification report serialization and formatting
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Tests covering:
 - Report construction

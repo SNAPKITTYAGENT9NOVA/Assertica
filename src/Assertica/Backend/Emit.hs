@@ -5,7 +5,7 @@
 Module      : Assertica.Backend.Emit
 Description : Emit syntactically valid Haskell source code
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 Converts compiled intermediate representations (from CodeGen, TermCompiler, etc.)
 into syntactically valid Haskell 2010 source code that can be processed by GHC.

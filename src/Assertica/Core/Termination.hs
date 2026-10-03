@@ -6,7 +6,7 @@
 Module      : Assertica.Core.Termination
 Description : Termination checking for recursive functions
 Copyright   : (c) 2026 Ahmad Ali Parr
-License     : MIT
+License     : BSL-1.0
 
 This module implements termination checking to ensure all recursive definitions
 are safe and will terminate. A function is considered terminating if:
