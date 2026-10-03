@@ -14,6 +14,7 @@ library
     import: warnings
     exposed-modules:
         Assertica.Core.AST
+        Assertica.Core.Assertion
         Assertica.Core.Equality
         Assertica.Core.Invariants
     build-depends:
@@ -30,6 +31,7 @@ test-suite assertica-tests
     main-is: Main.hs
     other-modules:
         Test.Core.AST
+        Test.Core.Assertion
         Test.Core.Equality
         Test.Core.Invariants
     build-depends:

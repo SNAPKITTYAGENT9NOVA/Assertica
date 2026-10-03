@@ -13,6 +13,7 @@ module Assertica.Core.AST
   , freeVars
   , boundVars
   , substitute
+  , alphaRename
   -- * Propositions (Agent 2A)
   , Proposition(..)
   , SourceLoc(..)
