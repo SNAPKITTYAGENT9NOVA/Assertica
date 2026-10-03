@@ -29,15 +29,28 @@ library
         Assertica.Surface.Lexer
         Assertica.Surface.Parser
         Assertica.Surface.Elaborator
+        Assertica.Backend.CodeGen
+        Assertica.Backend.TermCompiler
+        Assertica.Backend.TypeCompiler
+        Assertica.Backend.ProofCompiler
+        Assertica.Backend.Emit
         Assertica.StdLib.Setoid
         Assertica.StdLib.Lattice
         Assertica.StdLib.Absorption
         Assertica.StdLib.Monomorphism
+        Assertica.Verify.Pipeline
+        Assertica.Verify.Report
+        Assertica.Verify.ErrorReport
+        Assertica.Verify.CI
+        Assertica.Verify.CLI
     build-depends:
         base >=4.16 && <5,
         containers >=0.6,
         text >=1.2,
-        mtl >=2.2
+        mtl >=2.2,
+        directory >=1.3,
+        filepath >=1.4,
+        time >=1.9
     hs-source-dirs: src
     default-language: Haskell2010
 
@@ -59,10 +72,20 @@ test-suite assertica-tests
         Test.Surface.Lexer
         Test.Surface.Parser
         Test.Surface.Elaborator
+        Test.Backend.CodeGen
+        Test.Backend.TermCompiler
+        Test.Backend.TypeCompiler
+        Test.Backend.ProofCompiler
+        Test.Backend.Emit
+        Test.Backend.Integration
         Test.StdLib.Setoid
         Test.StdLib.Lattice
         Test.StdLib.Absorption
         Test.StdLib.Monomorphism
+        Test.Verify.PipelineTests
+        Test.Verify.ReportTests
+        Test.Verify.CITests
+        Test.Verify.ErrorReportTests
     build-depends:
         base >=4.16 && <5,
         assertica,
