@@ -39,8 +39,11 @@ DESIGN PRINCIPLES:
 -}
 
 module Assertica.Core.Module
-  ( -- * Module types
-    Module (..)
+  ( -- * Definitions
+    Definition (..)
+
+    -- * Module types
+  , Module (..)
   , ModuleMetadata (..)
   , ModuleInterface (..)
 
@@ -52,8 +55,10 @@ module Assertica.Core.Module
   , Export (..)
   , ExportItem (..)
 
-    -- * Visibility
+    -- * Visibility and stability
   , Visibility (..)
+  , Stability (..)
+  , Strength (..)
 
     -- * Dependency tracking
   , ModuleDependency (..)

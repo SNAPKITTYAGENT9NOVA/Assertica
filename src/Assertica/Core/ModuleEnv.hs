@@ -62,10 +62,11 @@ import Data.Typeable (Typeable)
 import Control.Monad (when)
 import Data.Either (partitionEithers)
 
-import Assertica.Core.AST (QName(..), Definition)
+import Assertica.Core.AST (QName(..))
 import Assertica.Core.Module
   ( Module(..), Import(..), Export(..), ExportItem(..)
   , Visibility(..), ModuleInterface(..), ImportStyle(..)
+  , Definition(..)
   , extractInterface, exportedNames, qualifyName
   )
 
