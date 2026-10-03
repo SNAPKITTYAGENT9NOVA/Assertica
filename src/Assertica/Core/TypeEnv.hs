@@ -67,6 +67,7 @@ import Assertica.Core.AST
   , freeVarsInType
   , freeVarsInTerm
   , prettyType
+  , varName
   )
 
 -- ============================================================================
