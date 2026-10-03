@@ -17,6 +17,7 @@ library
         Assertica.Core.Assertion
         Assertica.Core.Equality
         Assertica.Core.Invariants
+        Assertica.Core.ProofTerm
     build-depends:
         base >=4.16 && <5,
         containers >=0.6,
@@ -34,6 +35,7 @@ test-suite assertica-tests
         Test.Core.Assertion
         Test.Core.Equality
         Test.Core.Invariants
+        Test.Core.ProofTerm
     build-depends:
         base >=4.16 && <5,
         assertica,
