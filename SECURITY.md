@@ -55,7 +55,7 @@ Assertica's security model prioritizes **verification correctness** over cryptog
 **Threat:** Verification accepts proof when no valid proof exists.
 
 **Mitigation:**
-- Agent 2B (Proof Checker) implements deterministic verification
+- Proof Checker module (Proof Checker) implements deterministic verification
 - All proof primitives have explicit checking logic
 - Unknown proofs are rejected (fail-closed)
 - Negative tests verify rejection paths
@@ -96,7 +96,7 @@ Assertica's security model prioritizes **verification correctness** over cryptog
 **Threat:** Malformed proof or program causes verification to hang.
 
 **Mitigation:**
-- Agent 4B (Termination Checker) validates all recursion is structurally decreasing
+- Termination/Positivity module (Termination Checker) validates all recursion is structurally decreasing
 - Beta reduction on non-terminating definitions fails termination check
 - Module system detects circular dependencies
 - No infinite loops possible in verified programs
@@ -108,7 +108,7 @@ Assertica's security model prioritizes **verification correctness** over cryptog
 **Threat:** Type system admits Girard's paradox, making system inconsistent.
 
 **Mitigation:**
-- Agent 4B (Positivity Checker) validates inductive types are strictly positive
+- Termination/Positivity module (Positivity Checker) validates inductive types are strictly positive
 - Type constructor arguments checked for polarity
 - Negative positions in function domains cause rejection
 - Prevents impredicative type definitions
@@ -121,7 +121,7 @@ Assertica's security model prioritizes **verification correctness** over cryptog
 **Threat:** Circular imports create inconsistent state or infinite loops.
 
 **Mitigation:**
-- Agent 5A (Module System) performs circular dependency detection
+- Module System module (Module System) performs circular dependency detection
 - Topological sorting ensures loading order
 - Rejects programs with circular dependencies
 - Module environment tracks visited modules
@@ -134,7 +134,7 @@ Assertica's security model prioritizes **verification correctness** over cryptog
 **Threat:** Generated Haskell code uses unsafe operations (unsafeCoerce, etc.).
 
 **Mitigation:**
-- Agent 6A (Backend) generates only safe Haskell constructs
+- Code Generator module (Backend) generates only safe Haskell constructs
 - No `unsafeCoerce`, `unsafePerformIO`, `unsafeDupablePerformIO`
 - Generated code passes GHC type checker
 - Generated code uses only safe library functions
@@ -147,9 +147,9 @@ Assertica's security model prioritizes **verification correctness** over cryptog
 **Threat:** Proof term for type A is used to justify claim of type B.
 
 **Mitigation:**
-- Agent 2B checks proof against specific proposition
+- Proof Checker module checks proof against specific proposition
 - Proof type must match claimed property
-- Type environment (Agent 3B) tracks binding contexts
+- Type environment (Type Checker module) tracks binding contexts
 - Mismatch causes rejection
 
 **Risk Level:** MEDIUM | **Mitigation:** STRONG
@@ -243,7 +243,7 @@ If Assertica accepts a proof, then:
 │  TRUSTED COMPUTING BASE (TCB)                           │
 │                                                         │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │ Agent 1B: Equality Kernel (243 lines)            │  │
+│  │ Equality Kernel module: Equality Kernel (243 lines)            │  │
 │  │ • Beta reduction logic                           │  │
 │  │ • Alpha equivalence check                        │  │
 │  │ • Eta conversion                                 │  │
@@ -251,7 +251,7 @@ If Assertica accepts a proof, then:
 │  └──────────────────────────────────────────────────┘  │
 │                                                         │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │ Agent 2B: Proof Checker Core (200 lines approx)  │  │
+│  │ Proof Checker module: Proof Checker Core (200 lines approx)  │  │
 │  │ • Pattern matching on proof primitives           │  │
 │  │ • Proof type checking                            │  │
 │  │ • Refl, Symm, Trans verification                 │  │
@@ -411,7 +411,7 @@ Vulnerabilities are scored using CVSS 3.1:
 
 A security incident is:
 - Reported vulnerability with CVSS >= 4.0
-- Confirmed bug in TCB (Agent 1B, Agent 2B core)
+- Confirmed bug in TCB (Equality Kernel module, Proof Checker module core)
 - Evidence of vulnerability being exploited
 - Bug that violates stated guarantees
 
@@ -466,7 +466,7 @@ Run this checklist quarterly:
 - [ ] Determinism property tests pass
 - [ ] Fail-closed behavior verified
 - [ ] No new dependencies on external solvers
-- [ ] Kernel unchanged (Agent 1B, 2B core)
+- [ ] Kernel unchanged (Equality Kernel module, 2B core)
 - [ ] Security policy up to date
 - [ ] No open security issues
 
@@ -477,7 +477,7 @@ Run this checklist quarterly:
 - Institutions adopting Assertica for research
 
 **Audit Scope:**
-1. Code review of TCB (Agent 1B, Agent 2B) - ~450 lines
+1. Code review of TCB (Equality Kernel module, Proof Checker module) - ~450 lines
 2. Test coverage verification (>95%)
 3. Determinism verification (run tests 1000x)
 4. Threat model assessment

@@ -136,17 +136,17 @@ test_buggy = assertEqual 3 (buggyFunction 2)
 ### 2. Feature Enhancements (Non-Kernel)
 
 **Eligible Components:**
-- Standard library (Agent 5B)
-- Backend code generation (Agent 6A)
-- Verification reporting (Agent 6B)
-- CLI tools (Agent 6B)
+- Standard library (Standard Library module)
+- Backend code generation (Code Generator module)
+- Verification reporting (Verification Pipeline module)
+- CLI tools (Verification Pipeline module)
 - Test infrastructure
 
 **Ineligible Components (Kernel):**
-- Core AST (Agent 1A)
-- Equality checker (Agent 1B)
-- Proof checker (Agent 2B)
-- Type checker (Agent 3B)
+- Core AST (Core AST module)
+- Equality checker (Equality Checker module)
+- Proof checker (Proof Checker module)
+- Type checker (Type Checker module)
 
 **Process:**
 1. Open discussion issue first
@@ -314,7 +314,7 @@ checkTerm _ = Left "Error"
 
 - **New modules:** 95% code coverage minimum
 - **Existing modules:** No decrease in coverage
-- **Critical path (Agent 1B, 2B):** 100% coverage required
+- **Critical path (Equality Checker module, 2B):** 100% coverage required
 
 ### Test Structure
 
@@ -409,14 +409,14 @@ Co-Authored-By: Your Name <email@example.com> (if applicable)
 **Examples:**
 
 ```
-[Agent 5B] Add Lattice.absorbptionProof function
+[Standard Library module] Add Lattice.absorbptionProof function
 
 Implements the absorption theorem proof for lattice structures:
 a ⊔ (a ⊓ b) ≈ a
 
 Adds 24 unit tests covering all absorption cases and
 proof composition. Verifies proof terms are checked by
-Agent 2B proof checker.
+Proof Checker module proof checker.
 
 Fixes #145
 ```
@@ -469,7 +469,7 @@ Fixes #123
 
 ### Code Review Policy
 
-**Kernel Changes (Agent 1B, 2B):**
+**Kernel Changes (Equality Checker module, 2B):**
 - Requires 2+ architectural reviews
 - 48-hour review period minimum
 - All feedback must be addressed
@@ -570,18 +570,18 @@ git commit -s  # Automatically sign-off
 
 ## Architecture Constraints
 
-### Role Pair Boundaries
+### Module Boundaries
 
-Contributions must respect role pair ownership:
+Contributions must respect module architecture boundaries:
 
-| Role | Agents | Contribution Allowed | Contribution Forbidden |
-|------|--------|----------------------|------------------------|
-| 1 | 1A, 1B | Tests, documentation | Core AST, equality logic |
-| 2 | 2A, 2B | Proof primitives, tests | Proof checker core logic |
-| 3 | 3A, 3B | Surface syntax, type inference tests | Type system fundamentals |
-| 4 | 4A, 4B | New safety checks | Pattern/termination algorithms |
-| 5 | 5A, 5B | Algebraic structures, standard library | Module system core |
-| 6 | 6A, 6B | Code generation backends, CLI | Pipeline orchestration |
+| Layer | Modules | Contribution Allowed | Contribution Forbidden |
+|-------|---------|----------------------|------------------------|
+| **Kernel** | Core AST, Equality Checker | Tests, documentation | Core AST, equality logic |
+| **Verification** | Assertion System, Proof Checker | Proof primitives, tests | Proof checker core logic |
+| **Syntax** | Parser/Elaborator, Type Checker | Surface syntax, type inference tests | Type system fundamentals |
+| **Safety** | Pattern Compiler, Termination/Positivity | New safety checks | Pattern/termination algorithms |
+| **Organization** | Module System, Standard Library | Algebraic structures, standard library | Module system core |
+| **Emission** | Code Generator, Verification Pipeline | Code generation backends, CLI | Pipeline orchestration |
 
 ### Invariants That Cannot Change
 
@@ -598,17 +598,17 @@ These are inviolable (violations rejected in review):
 
 When adding features, ensure clean integration:
 
-- Use existing equality checker (Agent 1B) - don't reimplement
-- All proof verification goes through Agent 2B
-- Type environment via Agent 3B's API
-- Module resolution via Agent 5A
-- Code generation through Agent 6A's interfaces
+- Use existing equality checker (Equality Checker module) - don't reimplement
+- All proof verification goes through Proof Checker module
+- Type environment via Type Checker module's API
+- Module resolution via Module System module
+- Code generation through Code Generator module's interfaces
 
 ---
 
 ## Common Contribution Patterns
 
-### Adding a New Algebraic Structure (Agent 5B)
+### Adding a New Algebraic Structure (Standard Library module)
 
 1. Create new module: `src/Assertica/StdLib/YourStructure.hs`
 2. Define structure (analogous to `Setoid`, `Lattice`)
@@ -618,7 +618,7 @@ When adding features, ensure clean integration:
 6. Update `assertica.cabal` with new modules
 7. Submit PR with architecture discussion
 
-### Extending Parser/Elaborator (Agent 3A)
+### Extending Parser/Elaborator (Parser/Elaborator module)
 
 1. Extend token types in `Lexer.hs` if needed
 2. Add parser rule in `Parser.hs`
@@ -629,7 +629,7 @@ When adding features, ensure clean integration:
 7. Document syntax in examples
 8. Submit PR with grammar specification
 
-### Adding Backend Code Generation (Agent 6A)
+### Adding Backend Code Generation (Code Generator module)
 
 1. Extend target language support in `CodeGen.hs`
 2. Implement term compilation in appropriate compiler
@@ -643,7 +643,7 @@ When adding features, ensure clean integration:
 
 ## Frequently Asked Questions
 
-**Q: Can I modify the kernel (Agent 1B)?**
+**Q: Can I modify the kernel (Equality Checker module)?**
 A: Only for critical bug fixes. Changes require 2+ architectural reviews. Bug fix must have failing test demonstrating issue, and passing test after fix.
 
 **Q: What if I disagree with reviewer feedback?**
